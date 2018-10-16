@@ -1,29 +1,43 @@
 from models.user import User
-from models.invoice import Invoice
-from peewee import SqliteDatabase, IntegrityError
+from models.saloon import Saloon
+from models.appointment import Appointment
+from peewee import IntegrityError
+import datetime
+import config
 
-DATABASE = SqliteDatabase("invoice.db")
+DATABASE = config.DATABASE
 
 
 def initialize():
-    DATABASE.connect()
-    DATABASE.create_tables([User, Invoice], safe=True)
+    DATABASE.create_tables([User, Saloon, Appointment], safe=True)
     try:
         User.create(
-            first_name="Felician",
+            first_name="Felicia",
             last_name="Mueni",
-            email="john@doe.com",
-            company="Acme Corp."
+            email="john@doe.com"
+        )
+    except IntegrityError:
+        pass
+
+    try:
+        Saloon.create(
+            name="Mrembo",
+            business_number="9897",
+            opening_time="10:00 am",
+            closing_time="5:00 pm",
+            description="Urembo services",
+            services="Manicure, Pedicure, Haircare",
+            user_id=1,
+            location="George Padimore Lane"
         )
     except IntegrityError:
         pass
     try:
-        Invoice.create(
-                user_email="john@doe.com",
-                design_fee=500,
-                hosting_fee=175,
-                domain_fee=10
+        Appointment.create(
+                user_id=1,
+                saloon_id=1,
+                services="Manicure, Pedicure",
+                time_appointment=datetime.datetime.now()
         )
     except IntegrityError:
         pass
-    DATABASE.close()

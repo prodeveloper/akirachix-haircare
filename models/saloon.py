@@ -10,8 +10,9 @@ class Saloon(Model):
     opening_time = CharField(max_length=100)
     closing_time = CharField(max_length=200)
     description = TextField()
-    services = CharField(max_length=200)
+    services = TextField()
     user_id = CharField(max_length=200)
+    location = TextField()
 
     class Meta:
         database = DATABASE

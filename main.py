@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 from flask import (Flask, render_template, request, jsonify)
 from models.saloon import Saloon
+from models.user import User
+import bootstrap
 app_start_config = {'debug': True, 'port': 8080, 'host': '0.0.0.0'}
 app = Flask(__name__)
+bootstrap.initialize()
 
 
 @app.route('/')
@@ -12,10 +15,30 @@ def index():
 
 @app.route('/user/register', methods=['POST'])
 def register_user():
-    result = {'status': 'success'}
+    user_data = dict(request.form.items())
+    User.create(
+        first_name=user_data.get('first_name'),
+        last_name=user_data.get('last_name'),
+        email=user_data.get('email')
+    )
+    result = {
+        'status': 'success',
+        'message': '{first_name} registered'.format(user_data.first_name)}
     return jsonify(result)
 
 
+@app.route('/user')
+def list_users():
+    users = User.select()
+    results = []
+    for user in users:
+        results.append(
+            {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+        )
 @app.route('/saloon/add',  methods=['POST'])
 def add_saloon():
     saloon_data = dict(request.form.items())
