@@ -2,7 +2,9 @@
 from flask import (Flask, render_template, request, jsonify)
 from models.saloon import Saloon
 from models.user import User
+from models.appointment import Appointment
 from peewee import IntegrityError
+from datetime import datetime
 import bootstrap
 app_start_config = {'debug': True, 'port': 8080, 'host': '0.0.0.0'}
 app = Flask(__name__)
@@ -47,6 +49,39 @@ def list_users():
                 'email': user.email
             }
         )
+    return jsonify(results)
+
+
+@app.route('/appointment/add', methods=['POST'])
+def make_appointment():
+    appointment_data = dict(request.form.items())
+    time_appointment_raw = appointment_data.get('time_appointment')
+    time_appointment_processed = datetime.strptime(time_appointment_raw, "%d %b %Y %H:%M")
+    Appointment.create(
+        user_id=appointment_data.get('user_id'),
+        saloon_id=appointment_data.get('saloon_id'),
+        services=appointment_data.get('services'),
+        time_appointment=time_appointment_processed
+    )
+    result = {
+        "status": "Success",
+        "message": "Appointment set"
+        }
+    return jsonify(result)
+
+@app.route('/appointment')
+def list_appointments():
+    appointments = Appointment.select()
+    results = []
+    for appointment in appointments:
+        results.append(
+            {
+                'user_id': appointment.user_id,
+                'time_appointment': appointment.time_appointment,
+                'saloon_id': appointment.saloon_id,
+                'services': appointment.services
+            }
+            )
     return jsonify(results)
 
 

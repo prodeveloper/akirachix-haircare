@@ -33,11 +33,14 @@ def initialize():
     except IntegrityError:
         pass
     try:
-        Appointment.create(
-                user_id=1,
-                saloon_id=1,
-                services="Manicure, Pedicure",
-                time_appointment=datetime.datetime.now()
-        )
+        no_appointments = Appointment.select().count()
+        if no_appointments < 1:
+            Appointment.create(
+                    user_id=1,
+                    saloon_id=1,
+                    services="Manicure, Pedicure",
+                    time_appointment=datetime.datetime.now()
+            )
+
     except IntegrityError:
         pass
