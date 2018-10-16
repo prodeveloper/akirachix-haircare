@@ -1,6 +1,7 @@
-from peewee import (Model, CharField, SqliteDatabase, IntegrityError)
+from peewee import (Model, CharField, IntegrityError)
+import config
 
-DATABASE = SqliteDatabase("invoice.db")
+DATABASE = config.DATABASE
 
 
 class User(Model):

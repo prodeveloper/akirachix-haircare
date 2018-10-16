@@ -1,6 +1,7 @@
-from peewee import (Model, CharField, SqliteDatabase, IntegrityError, TextField)
+from peewee import (Model, CharField,IntegrityError, TextField)
+import config
 
-DATABASE = SqliteDatabase("haircare.db")
+DATABASE = config.DATABASE
 
 
 class Saloon(Model):
